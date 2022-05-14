@@ -28,17 +28,12 @@ def checkEmpCredentials(username, password):
     """Validate employee login based on username and password"""
     try:
         curs = openConnection().cursor()
-        curs.execute("SELECT *\
-                      FROM Employee")
+        curs.callproc("checkEmpCredentials", [username, password])
 
-        # nr = 0
         row = curs.fetchone()
-        while row is not None:
-            # nr += 1
-            if row[1] == username and row[3]:
-                return row
-            row = curs.fetchone()
-        return
+        if not row:
+            return
+        return row
     except psycopg2.Error as sqle:
         print("psycopg2.Error : " + sqle.pgerror)
         return
