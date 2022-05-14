@@ -1,17 +1,13 @@
-#!/usr/bin/env python3
+"""Database Connection"""
 import psycopg2
 
-"""Database Connection"""
-
-'''
-Connect to the database using the connection string
-'''
 
 def openConnection():
+    """Connect to the database using the connection string"""
     # connection parameters - ENTER YOUR LOGIN AND PASSWORD HERE
-    userid = "y22s1c9120_unikey"
-    passwd = "password"
-    myHost = "soit-db-pro-2.ucc.usyd.edu.au"
+    userid = "postgres"
+    passwd = "123"
+    myHost = "localhost"
 
     # Create a connection to the database
     conn = None
@@ -28,13 +24,24 @@ def openConnection():
     return conn
 
 
-'''
-Validate employee login based on username and password
-'''
-
-
 def checkEmpCredentials(username, password):
-    return ['2', 'jaddison', 'Jo Addison', '111', 'jaddison@wsa.com.au', 'Technician']
+    """Validate employee login based on username and password"""
+    try:
+        curs = openConnection().cursor()
+        curs.execute("SELECT *\
+                      FROM Employee")
+
+        # nr = 0
+        row = curs.fetchone()
+        while row is not None:
+            # nr += 1
+            if row[1] == username and row[3]:
+                return row
+            row = curs.fetchone()
+        return
+    except psycopg2.Error as sqle:
+        print("psycopg2.Error : " + sqle.pgerror)
+        return
 
 
 '''
