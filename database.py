@@ -43,11 +43,8 @@ def findTestsByEmployee(username):
         curs = openConnection().cursor()
         curs.callproc("findTestsByEmployee", [username])
 
-        num = 0
         row = curs.fetchone()
-        while not row:
-            print(row)
-            num += 1
+        while row:
             result.append({
                 "test_id": row[0],
                 "test_date": row[1],
@@ -63,13 +60,11 @@ def findTestsByEmployee(username):
         return result
 
 
-'''
-Find a list of test events based on the searchString provided as parameter
-See assignment description for search specification
-'''
-
-
 def findTestsByCriteria(searchString):
+    """Find a list of test events based on the searchString provided as parameter
+    See assignment description for search specification
+    """
+
     return
 
 
