@@ -30,22 +30,37 @@ def checkEmpCredentials(username, password):
         curs = openConnection().cursor()
         curs.callproc("checkEmpCredentials", [username, password])
 
-        row = curs.fetchone()
-        if not row:
-            return
-        return row
+        return curs.fetchone()
     except psycopg2.Error as sqle:
         print("psycopg2.Error : " + sqle.pgerror)
         return
 
 
-'''
-List all the associated tests in the database for an employee
-'''
-
-
 def findTestsByEmployee(username):
-    return
+    """List all the associated tests in the database for an employee"""
+    result = []
+    try:
+        curs = openConnection().cursor()
+        curs.callproc("findTestsByEmployee", [username])
+
+        num = 0
+        row = curs.fetchone()
+        while not row:
+            print(row)
+            num += 1
+            result.append({
+                "test_id": row[0],
+                "test_date": row[1],
+                "regno": row[2],
+                "status": row[3],
+                "technician": row[4],
+                "testengineer": row[5],
+            })
+            row = curs.fetchone()
+    except psycopg2.Error as sqle:
+        print("psycopg2.Error : " + sqle.pgerror)
+    finally:
+        return result
 
 
 '''
