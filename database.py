@@ -1,6 +1,8 @@
 """Database Connection"""
 import psycopg2
 
+global current_user
+
 
 def openConnection():
     """Connect to the database using the connection string"""
@@ -26,10 +28,13 @@ def openConnection():
 
 def checkEmpCredentials(username, password):
     """Validate employee login based on username and password"""
+    global current_user
+
     try:
         curs = openConnection().cursor()
         curs.callproc("checkEmpCredentials", [username, password])
 
+        current_user = username
         return curs.fetchone()
     except psycopg2.Error as sqle:
         print("psycopg2.Error : " + sqle.pgerror)
@@ -46,12 +51,13 @@ def findTestsByEmployee(username):
         row = curs.fetchone()
         while row:
             result.append({
-                "test_id": row[0],
+                "test_id": str(row[0]),
                 "test_date": row[1],
                 "regno": row[2],
                 "status": row[3],
                 "technician": row[4],
                 "testengineer": row[5],
+                "technicianuser": current_user,
             })
             row = curs.fetchone()
     except psycopg2.Error as sqle:
@@ -64,9 +70,6 @@ def findTestsByCriteria(searchString):
     """Find a list of test events based on the searchString provided as parameter
     See assignment description for search specification
     """
-
-
-    return
 
 
 '''
