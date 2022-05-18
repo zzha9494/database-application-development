@@ -98,18 +98,17 @@ def findTestsByCriteria(searchString):
 
 def addTest(test_date, regno, status, technician, testengineer):
     """Add a new test event"""
-    conn = openConnection()
-    curs = conn.cursor()
-    curs.callproc("addTest", [test_date, regno, status, technician, testengineer])
-    result = curs.fetchone()
-    conn.commit()
-    return result[0]
-
-
-'''
-Update an existing test event
-'''
+    try:
+        conn = openConnection()
+        curs = conn.cursor()
+        curs.callproc("addTest", [test_date, regno, status, technician, testengineer])
+        result = curs.fetchone()
+        conn.commit()
+        return result[0]
+    except psycopg2.Error as sqle:
+        print("psycopg2.Error : " + sqle.pgerror)
 
 
 def updateTest(test_id, test_date, regno, status, technician, testengineer):
+    """Update an existing test event"""
     return
