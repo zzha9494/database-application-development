@@ -70,14 +70,34 @@ def findTestsByCriteria(searchString):
     """Find a list of test events based on the searchString provided as parameter
     See assignment description for search specification
     """
+    keyword = str(searchString).strip().lower()
+    result = []
+    try:
+        if keyword == "":
+            return findTestsByEmployee(current_user)
 
+        curs = openConnection().cursor()
+        curs.callproc("findTestsByCriteria", [keyword])
 
-'''
-Add a new test event
-'''
+        row = curs.fetchone()
+        while row:
+            result.append({
+                "test_id": str(row[0]),
+                "test_date": row[1],
+                "regno": row[2],
+                "status": row[3],
+                "technician": row[4],
+                "testengineer": row[5],
+                "technicianuser": current_user,
+            })
+            row = curs.fetchone()
+        return result
+    except psycopg2.Error as sqle:
+        print("psycopg2.Error : " + sqle.pgerror)
 
 
 def addTest(test_date, regno, status, technician, testengineer):
+    """Add a new test event"""
     return
 
 
