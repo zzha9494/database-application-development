@@ -100,13 +100,10 @@ def addTest(test_date, regno, status, technician, testengineer):
     """Add a new test event"""
     conn = openConnection()
     curs = conn.cursor()
-    curs.callproc("test", [test_date, regno, status, technician, testengineer])
+    curs.callproc("addTest", [test_date, regno, status, technician, testengineer])
     result = curs.fetchone()
-    if result[-1]:
-        curs.execute(f"INSERT INTO TestEvent (TestDate,RegNo,Status,Technician,TestEngineer)"
-                     f"VALUES ('{test_date}', '{regno}', '{result[0]}', {result[1]}, {result[2]});")
     conn.commit()
-    return result[-1]
+    return result[0]
 
 
 '''
